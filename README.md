@@ -40,6 +40,18 @@ open output/ # Mac
 
 # 스키마 설명
 
+| 컬럼         | 타입        | 제약               | 설명                                       |
+| ------------ | ----------- | ------------------ | ------------------------------------------ |
+| `id`         | INT         | PK, AUTO_INCREMENT | 고유 식별자                                |
+| `created_at` | DATETIME    | NOT NULL           | 이벤트 발생 시각                           |
+| `user_id`    | VARCHAR(64) | NOT NULL           | 사용자 식별자                              |
+| `event_type` | VARCHAR(64) | NOT NULL           | 이벤트 종류 (`view` / `buy` / `error`)     |
+| `page_name`  | VARCHAR(64) | NULL               | `event_type = "view"`일 때 조회한 페이지명 |
+| `purchase`   | VARCHAR(64) | NULL               | `event_type = "buy"`일 때 구매 항목        |
+| `error_code` | INT         | NULL               | `event_type = "error"`일 때 에러 코드      |
+
+> 마지막 세 컬럼(`page_name`, `purchase`, `error_code`)은 특정 `event_type`에서만 값을 가지며, 나머지 경우엔 `NULL`입니다. 예를 들어 `view` 이벤트는 `page_name`만, `buy` 이벤트는 `purchase`만 채워집니다.
+
 테이블은 스파스 열을 활용한 와이드 테이블로 설계하였습니다. 각 이벤트 고유의 필드를 properties라는 JSON 타입의 열 한개에 넣어볼까도 고민 했지만, 과제 특성상 이벤트수가 적고 테이블이 크지 않아서 분석에 더 편리하도록 각 이벤트 고유 필드를 각각의 열로 설정해 타입을 유지하기로 결정했습니다. 하지만, 이벤트를 더 늘리게 된다면, 이벤트 하나 추가 될때마다 매번 테이블 스키마를 수정해야하고 테이블도 읽기 힘들게 커질테니, JSON 타입의 열을 사용하는 방식으로 수정해 나가는 것도 좋을 것이라고 판단됩니다.
 
 # 구현하면서 고민한 점
