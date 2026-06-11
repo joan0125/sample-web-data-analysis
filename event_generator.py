@@ -6,13 +6,13 @@ import json
 events = ["view", "buy", "error"]
 pages = ["home", "about", "classes", "careers"]
 error_codes = [400, 401, 403, 404, 500, 502, 503, 504]
-# filters = ["category", "price"]
+
 
 def make_one_event():
     timestamp = datetime.now()
     e = random.choice(events)
     user_id = str(uuid.uuid1())
-    event = {"timestamp": timestamp,
+    event = {"created_at": timestamp,
              "user_id":  user_id,
              "event_type": e}
     if e == "view":
@@ -30,7 +30,13 @@ def make_one_event():
 
     return event
 
+def make_events(n: int) -> list[dict]:
+    return [make_one_event() for _ in range(n)]
+
 def main():
-    print(make_one_event())
+    from db import insert_events
+    events = make_events(100)
+    insert_events(events)
+
 if __name__ == "__main__":
     main()
